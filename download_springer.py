@@ -2,6 +2,7 @@ import requests
 import os
 import pandas as pd
 import logging
+from lxml import html
 
 logger = logging.getLogger('download_springer_textbooks')
 logger.setLevel(logging.DEBUG)
@@ -18,6 +19,7 @@ urls = {
 }
 
 DOWNLOAD_FOLDER = 'downloads/'
+DOWNLOAD_BASE_URL = 'https://link.springer.com/content/pdf/'
 logger.info('Processing downloads')
 for language, url in urls.items():
     logger.info('Processing download for %s', language)
@@ -28,10 +30,13 @@ for language, url in urls.items():
         os.makedirs(download_path)
     for index, row in df.iterrows():
         file_name = f"{row.loc['Book Title']}_{row.loc['Edition']}"
-        download_url = f"{row.loc['OpenURL']}"
+        download_url = row.loc['DOI URL'].replace(
+            'http://doi.org/',
+            DOWNLOAD_BASE_URL
+        )
         logger.info('Downloading %s', file_name)
         # replace / in filename as it treats it as directory
         with open('{}/{}.pdf'.format(download_path, file_name.replace('/', '-')), 'wb') as f:
-            f.write(requests.get(url).content)
+            f.write(requests.get(download_url).content)
 
 
