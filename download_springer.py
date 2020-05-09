@@ -2,7 +2,6 @@ import requests
 import os
 import pandas as pd
 import logging
-from lxml import html
 
 logger = logging.getLogger('download_springer_textbooks')
 logger.setLevel(logging.DEBUG)
