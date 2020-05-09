@@ -30,7 +30,8 @@ for language, url in urls.items():
         file_name = f"{row.loc['Book Title']}_{row.loc['Edition']}"
         download_url = f"{row.loc['OpenURL']}"
         logger.info('Downloading %s', file_name)
-        with open('{}/{}.pdf'.format(download_path, file_name), 'wb') as f:
+        # replace / in filename as it treats it as directory
+        with open('{}/{}.pdf'.format(download_path, file_name.replace('/', '-')), 'wb') as f:
             f.write(requests.get(url).content)
 
 
